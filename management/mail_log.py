@@ -107,7 +107,7 @@ def scan_mail_log(env):
         "sent_mail": OrderedDict(),  # Data about email sent by users
         "received_mail": OrderedDict(),  # Data about email received by users
         "logins": OrderedDict(),  # Data about login activity
-        "postgrey": {},  # Data about greylisting of email addresses
+        # "postgrey": {},  # Data about greylisting of email addresses
         "rejected": OrderedDict(),  # Emails that were blocked
         "known_addresses": None,  # Addresses handled by the Miab installation
         "other-services": set(),
@@ -251,43 +251,43 @@ def scan_mail_log(env):
             [accum[protocol_name] for protocol_name in all_protocols]
         )
 
-    if collector["postgrey"]:
-        msg = "Greylisted Email {:%Y-%m-%d %H:%M:%S} and {:%Y-%m-%d %H:%M:%S}"
-        print_header(msg.format(END_DATE, START_DATE))
+#    if collector["postgrey"]:
+#        msg = "Greylisted Email {:%Y-%m-%d %H:%M:%S} and {:%Y-%m-%d %H:%M:%S}"
+#        print_header(msg.format(END_DATE, START_DATE))
 
-        print(textwrap.fill(
-            "The following mail was greylisted, meaning the emails were temporarily rejected. "
-            "Legitimate senders must try again after three minutes.",
-            width=80, initial_indent=" ", subsequent_indent=" "
-        ), end='\n\n')
+#        print(textwrap.fill(
+#            "The following mail was greylisted, meaning the emails were temporarily rejected. "
+#            "Legitimate senders must try again after three minutes.",
+#            width=80, initial_indent=" ", subsequent_indent=" "
+#        ), end='\n\n')
 
-        data = OrderedDict(sorted(collector["postgrey"].items(), key=email_sort))
-        users = []
-        received = []
-        senders = []
-        sender_clients = []
-        delivered_dates = []
+#        data = OrderedDict(sorted(collector["postgrey"].items(), key=email_sort))
+#        users = []
+#        received = []
+#        senders = []
+#        sender_clients = []
+#        delivered_dates = []
 
-        for recipient in data:
-            sorted_recipients = sorted(data[recipient].items(), key=lambda kv: kv[1][0] or kv[1][1])
-            for (client_address, sender), (first_date, delivered_date) in sorted_recipients:
-                if first_date:
-                    users.append(recipient)
-                    received.append(first_date)
-                    senders.append(sender)
-                    delivered_dates.append(delivered_date)
-                    sender_clients.append(client_address)
+#        for recipient in data:
+#            sorted_recipients = sorted(data[recipient].items(), key=lambda kv: kv[1][0] or kv[1][1])
+#            for (client_address, sender), (first_date, delivered_date) in sorted_recipients:
+#                if first_date:
+#                    users.append(recipient)
+#                    received.append(first_date)
+#                    senders.append(sender)
+#                    delivered_dates.append(delivered_date)
+#                    sender_clients.append(client_address)
 
-        print_user_table(
-            users,
-            data=[
-                ("received", received),
-                ("sender", senders),
-                ("delivered", [str(d) or "no retry yet" for d in delivered_dates]),
-                ("sending host", sender_clients)
-            ],
-            delimit=True,
-        )
+#        print_user_table(
+#            users,
+#            data=[
+#                ("received", received),
+#                ("sender", senders),
+#                ("delivered", [str(d) or "no retry yet" for d in delivered_dates]),
+#                ("sending host", sender_clients)
+#            ],
+#            delimit=True,
+#        )
 
     if collector["rejected"]:
         msg = "Blocked Email {:%Y-%m-%d %H:%M:%S} and {:%Y-%m-%d %H:%M:%S}"
@@ -370,9 +370,9 @@ def scan_mail_log_line(line, collector):
     elif service.endswith("-login"):
         if SCAN_DOVECOT_LOGIN:
             scan_dovecot_login_line(date, log, collector, service[:4])
-    elif service == "postgrey":
-        if SCAN_GREY:
-            scan_postgrey_line(date, log, collector)
+#    elif service == "postgrey":
+#        if SCAN_GREY:
+#            scan_postgrey_line(date, log, collector)
     elif service == "postfix/smtpd":
         if SCAN_BLOCKED:
             scan_postfix_smtpd_line(date, log, collector)
@@ -389,18 +389,18 @@ def scan_mail_log_line(line, collector):
     return True
 
 
-def scan_postgrey_line(date, log, collector):
-    """ Scan a postgrey log line and extract interesting data """
+#def scan_postgrey_line(date, log, collector):
+#    """ Scan a postgrey log line and extract interesting data """
 
-    m = re.match("action=(greylist|pass), reason=(.*?), (?:delay=\d+, )?client_name=(.*), "
-                 "client_address=(.*), sender=(.*), recipient=(.*)",
-                 log)
+#    m = re.match("action=(greylist|pass), reason=(.*?), (?:delay=\d+, )?client_name=(.*), "
+#                 "client_address=(.*), sender=(.*), recipient=(.*)",
+#                 log)
 
-    if m:
+#    if m:
 
-        action, reason, client_name, client_address, sender, user = m.groups()
+#        action, reason, client_name, client_address, sender, user = m.groups()
 
-        if user_match(user):
+#        if user_match(user):
 
             # Might be useful to group services that use a lot of mail different servers on sub
             # domains like <sub>1.domein.com
@@ -410,14 +410,14 @@ def scan_postgrey_line(date, log, collector):
             #     if len(addr) > 2:
             #         client_name = '.'.join(addr[1:])
 
-            key = (client_address if client_name == 'unknown' else client_name, sender)
+#            key = (client_address if client_name == 'unknown' else client_name, sender)
 
-            rep = collector["postgrey"].setdefault(user, {})
+#            rep = collector["postgrey"].setdefault(user, {})
 
-            if action == "greylist" and reason == "new":
-                rep[key] = (date, rep[key][1] if key in rep else None)
-            elif action == "pass":
-                rep[key] = (rep[key][0] if key in rep else None, date)
+#            if action == "greylist" and reason == "new":
+#                rep[key] = (date, rep[key][1] if key in rep else None)
+#            elif action == "pass":
+#                rep[key] = (rep[key][0] if key in rep else None, date)
 
 
 def scan_postfix_smtpd_line(date, log, collector):
