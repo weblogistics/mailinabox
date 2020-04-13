@@ -8,8 +8,7 @@
 #
 # Postfix listens on port 25 (SMTP) for incoming mail from
 # other servers on the Internet. It is responsible for very
-# basic email filtering such as by IP address and greylisting,
-# it checks that the destination address is valid, rewrites
+# basic email filtering such as checking that the destination address is valid, rewrites
 # destinations according to aliases, and passses email on to
 # another service for local mail delivery.
 #
@@ -36,13 +35,12 @@ source /etc/mailinabox.conf # load global vars
 #
 # * `postfix`: The SMTP server.
 # * `postfix-pcre`: Enables header filtering.
-# * `postgrey`: A mail policy service that soft-rejects mail the first time
 #   it is received. Spammers don't usually try agian. Legitimate mail
 #   always will.
 # * `ca-certificates`: A trust store used to squelch postfix warnings about
 #   untrusted opportunistically-encrypted connections.
 echo "Installing Postfix (SMTP server)..."
-apt_install postfix postfix-sqlite postfix-pcre postgrey ca-certificates
+apt_install postfix postfix-sqlite postfix-pcre ca-certificates
 
 # ### Basic Settings
 
@@ -58,7 +56,7 @@ tools/editconf.py /etc/postfix/main.cf \
 	smtp_bind_address=$PRIVATE_IP \
 	smtp_bind_address6=$PRIVATE_IPV6 \
 	myhostname=$PRIMARY_HOSTNAME\
-	smtpd_banner="\$myhostname ESMTP Hi, I'm a Mail-in-a-Box (Ubuntu/Postfix; see https://mailinabox.email/)" \
+	smtpd_banner="\$myhostname ESMTP " \
 	mydestination=localhost
 
 # Tweak some queue settings:
@@ -206,54 +204,15 @@ tools/editconf.py /etc/postfix/main.cf lmtp_destination_recipient_limit=1
 # * `permit_sasl_authenticated`: Authenticated users (i.e. on port 587) can skip further checks.
 # * `permit_mynetworks`: Mail that originates locally can skip further checks.
 # * `reject_rbl_client`: Reject connections from IP addresses blacklisted in zen.spamhaus.org
-# * `reject_unlisted_recipient`: Although Postfix will reject mail to unknown recipients, it's nicer to reject such mail ahead of greylisting rather than after.
-# * `check_policy_service`: Apply greylisting using postgrey.
+# * `reject_unlisted_recipient`: Although Postfix will reject mail to unknown recipients.
 #
 # Notes: #NODOC
-# permit_dnswl_client can pass through mail from whitelisted IP addresses, which would be good to put before greylisting #NODOC
-# so these IPs get mail delivered quickly. But when an IP is not listed in the permit_dnswl_client list (i.e. it is not #NODOC
+# When an IP is not listed in the permit_dnswl_client list (i.e. it is not #NODOC
 # whitelisted) then postfix does a DEFER_IF_REJECT, which results in all "unknown user" sorts of messages turning into #NODOC
 # "450 4.7.1 Client host rejected: Service unavailable". This is a retry code, so the mail doesn't properly bounce. #NODOC
 tools/editconf.py /etc/postfix/main.cf \
 	smtpd_sender_restrictions="reject_non_fqdn_sender,reject_unknown_sender_domain,reject_authenticated_sender_login_mismatch,reject_rhsbl_sender dbl.spamhaus.org" \
-	smtpd_recipient_restrictions=permit_sasl_authenticated,permit_mynetworks,"reject_rbl_client zen.spamhaus.org",reject_unlisted_recipient,"check_policy_service inet:127.0.0.1:10023"
-
-# Postfix connects to Postgrey on the 127.0.0.1 interface specifically. Ensure that
-# Postgrey listens on the same interface (and not IPv6, for instance).
-# A lot of legit mail servers try to resend before 300 seconds.
-# As a matter of fact RFC is not strict about retry timer so postfix and
-# other MTA have their own intervals. To fix the problem of receiving
-# e-mails really latter, delay of greylisting has been set to
-# 180 seconds (default is 300 seconds).
-tools/editconf.py /etc/default/postgrey \
-	POSTGREY_OPTS=\"'--inet=127.0.0.1:10023 --delay=180'\"
-
-
-# We are going to setup a newer whitelist for postgrey, the version included in the distribution is old
-cat > /etc/cron.daily/mailinabox-postgrey-whitelist << EOF;
-#!/bin/bash
-
-# Mail-in-a-Box
-
-# check we have a postgrey_whitelist_clients file and that it is not older than 28 days
-if [ ! -f /etc/postgrey/whitelist_clients ] || find /etc/postgrey/whitelist_clients -mtime +28 | grep -q '.' ; then
-    # ok we need to update the file, so lets try to fetch it
-    if curl https://postgrey.schweikert.ch/pub/postgrey_whitelist_clients --output /tmp/postgrey_whitelist_clients -sS --fail > /dev/null 2>&1 ; then
-        # if fetching hasn't failed yet then check it is a plain text file
-        # curl manual states that --fail sometimes still produces output
-        # this final check will at least check the output is not html
-        # before moving it into place
-        if [ "\$(file -b --mime-type /tmp/postgrey_whitelist_clients)" == "text/plain" ]; then
-            mv /tmp/postgrey_whitelist_clients /etc/postgrey/whitelist_clients
-            service postgrey restart
-	else
-            rm /tmp/postgrey_whitelist_clients
-        fi
-    fi
-fi
-EOF
-chmod +x /etc/cron.daily/mailinabox-postgrey-whitelist
-/etc/cron.daily/mailinabox-postgrey-whitelist
+	smtpd_recipient_restrictions=permit_sasl_authenticated,permit_mynetworks,"reject_rbl_client zen.spamhaus.org",reject_unlisted_recipient
 
 # Increase the message size limit from 10MB to 128MB.
 # The same limit is specified in nginx.conf for mail submitted via webmail and Z-Push.
@@ -268,4 +227,3 @@ ufw_allow submission
 # Restart services
 
 restart_service postfix
-restart_service postgrey
