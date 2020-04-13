@@ -793,26 +793,26 @@ def get_latest_miab_version():
     except (HTTPError, URLError, timeout):
         return None
 
-def check_miab_version(env, output):
-	config = load_settings(env)
+#def check_miab_version(env, output):
+#	config = load_settings(env)
 
-	try:
-		this_ver = what_version_is_this(env)
-	except:
-		this_ver = "Unknown"
+#	try:
+#		this_ver = what_version_is_this(env)
+#	except:
+#		this_ver = "Unknown"
 
-	if config.get("privacy", True):
-		output.print_warning("You are running version Mail-in-a-Box %s. Mail-in-a-Box version check disabled by privacy setting." % this_ver)
-	else:
-		latest_ver = get_latest_miab_version()
+#	if config.get("privacy", True):
+#		output.print_warning("You are running version Mail-in-a-Box %s. Mail-in-a-Box version check disabled by privacy setting." % this_ver)
+#	else:
+#		latest_ver = get_latest_miab_version()
 
-		if this_ver == latest_ver:
-			output.print_ok("Mail-in-a-Box is up to date. You are running version %s." % this_ver)
-		elif latest_ver is None:
-			output.print_error("Latest Mail-in-a-Box version could not be determined. You are running version %s." % this_ver)
-		else:
-			output.print_error("A new version of Mail-in-a-Box is available. You are running version %s. The latest version is %s. For upgrade instructions, see https://mailinabox.email. "
-				% (this_ver, latest_ver))
+#		if this_ver == latest_ver:
+#			output.print_ok("Mail-in-a-Box is up to date. You are running version %s." % this_ver)
+#		elif latest_ver is None:
+#			output.print_error("Latest Mail-in-a-Box version could not be determined. You are running version %s." % this_ver)
+#		else:
+#			output.print_error("A new version of Mail-in-a-Box is available. You are running version %s. The latest version is %s. For upgrade instructions, see https://mailinabox.email. "
+#				% (this_ver, latest_ver))
 
 def run_and_output_changes(env, pool):
 	import json

@@ -43,12 +43,12 @@
 	<button type="button" class="btn btn-danger" onclick="confirm_reboot(); return false;">Reboot Box</button>
 	<div>No reboot is necessary.</div>
 </div>
-
+<!--
 <div id="system-privacy-setting" style="display: none">
 	<div><a onclick="return enable_privacy(!current_privacy_setting)" href="#"><span>Enable/Disable</span> New-Version Check</a></div>
 	<p style="line-height: 125%"><small>(When enabled, status checks phone-home to check for a new release of Mail-in-a-Box.)</small></p>
 </div>
-
+-->
 	</div> <!-- /col -->
 	<div class="col-md-pull-3 col-md-8">
 
@@ -127,7 +127,7 @@ function show_system_status() {
 }
 
 var current_privacy_setting = null;
-function enable_privacy(status) {
+/*function enable_privacy(status) {
   api(
     "/system/privacy",
     "POST",
@@ -138,7 +138,7 @@ function enable_privacy(status) {
       show_system_status();
     });
   return false; // disable link
-}
+}*/
 
 function confirm_reboot() {
   show_modal_confirm(
