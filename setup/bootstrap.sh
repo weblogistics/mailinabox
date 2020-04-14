@@ -6,14 +6,13 @@
 #
 #########################################################
 
-	if [ "`lsb_release -d | sed 's/.*:\s*//' | sed 's/18\.04\.[0-9]/18.04/' `" == "Ubuntu 18.04 LTS" ]; then
-		# This machine is running Ubuntu 18.04.
-		TAG=v0.44
+if [ "`lsb_release -d | sed 's/.*:\s*//' | sed 's/18\.04\.[0-9]/18.04/' `" == "Ubuntu 18.04 LTS" ]; then
+	# This machine is running Ubuntu 18.04.
+	TAG=v0.44
 
-	else
-		echo "This script must be run on a system running Ubuntu 18.04."
-		exit 1
-	fi
+else
+	echo "This script must be run on a system running Ubuntu 18.04."
+	exit 1
 fi
 
 # Are we running as root?
