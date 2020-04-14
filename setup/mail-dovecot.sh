@@ -74,7 +74,7 @@ cp conf/dovecot-mailboxes.conf /etc/dovecot/conf.d/15-mailboxes.conf
 # The LOGIN mechanism is supposedly for Microsoft products like Outlook to do SMTP login (I guess
 # since we're using Dovecot to handle SMTP authentication?).
 tools/editconf.py /etc/dovecot/conf.d/10-auth.conf \
-	disable_plaintext_auth=yes \
+	disable_plaintext_auth=no \
 	"auth_mechanisms=plain login"
 
 # Enable SSL, specify the location of the SSL certificate and private key files.
@@ -84,7 +84,7 @@ tools/editconf.py /etc/dovecot/conf.d/10-ssl.conf \
 	ssl=required \
 	"ssl_cert=<$STORAGE_ROOT/ssl/ssl_certificate.pem" \
 	"ssl_key=<$STORAGE_ROOT/ssl/ssl_private_key.pem" \
-	"ssl_protocols=TLSv1.2" \
+#	"ssl_protocols=TLSv1.2" \
 	"ssl_cipher_list=ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384" \
 	"ssl_prefer_server_ciphers=no" \
 	"ssl_dh_parameters_length=2048"
@@ -92,8 +92,9 @@ tools/editconf.py /etc/dovecot/conf.d/10-ssl.conf \
 # Disable in-the-clear IMAP/POP because there is no reason for a user to transmit
 # login credentials outside of an encrypted connection. Only the over-TLS versions
 # are made available (IMAPS on port 993; POP3S on port 995).
-sed -i "s/#port = 143/port = 0/" /etc/dovecot/conf.d/10-master.conf
-sed -i "s/#port = 110/port = 0/" /etc/dovecot/conf.d/10-master.conf
+
+#sed -i "s/#port = 143/port = 0/" /etc/dovecot/conf.d/10-master.conf
+#sed -i "s/#port = 110/port = 0/" /etc/dovecot/conf.d/10-master.conf
 
 # Make IMAP IDLE slightly more efficient. By default, Dovecot says "still here"
 # every two minutes. With K-9 mail, the bandwidth and battery usage due to
@@ -139,7 +140,8 @@ service lmtp {
 # for Nextcloud to do imap authentication. (See #1577)
 service imap-login {
   inet_listener imap {
-    address = 127.0.0.1
+#    address = 127.0.0.1
+    address = 0.0.0.0
     port = 143
   }
 }
@@ -211,6 +213,8 @@ chown -R mail.mail $STORAGE_ROOT/mail/sieve
 # Allow the IMAP/POP ports in the firewall.
 ufw_allow imaps
 ufw_allow pop3s
+ufw_allow imap
+ufw_allow pop3
 
 # Allow the Sieve port in the firewall.
 ufw_allow sieve
