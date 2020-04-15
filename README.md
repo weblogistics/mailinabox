@@ -1,7 +1,7 @@
 Mail-in-a-Box - Less
 ====================
 
-This is a fork to 
+This is a fork of Mail-in-a-box to 
 1. Remove some innecessary "stuff" for those of us a little more advanced.  Postgrey, is a good example!  I also don't want DNS.
 2. Improve the web front end to allow for user self-service
 
