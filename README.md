@@ -5,6 +5,8 @@ This is a fork to
 1. Remove some innecessary "stuff" for those of us a little more advanced.  Postgrey, is a good example!  I also don't want DNS.
 2. Improve the web front end to allow for user self-service
 
+Lots of compatibility issues with Window 10 Mail.  One day Microsoft will fix it, but for now I don't want to p1$$ people off...
+
 By [@JoshData](https://github.com/JoshData) and [contributors](https://github.com/mail-in-a-box/mailinabox/graphs/contributors).
 
 Mail-in-a-Box helps individuals take back control of their email by defining a one-click, easy-to-deploy SMTP+everything else server: a mail server in a box.
