@@ -174,7 +174,7 @@ tools/editconf.py /etc/postfix/main.cf \
 	smtp_tls_protocols=\!SSLv2,\!SSLv3 \
 	smtp_tls_ciphers=medium \
 	smtp_tls_exclude_ciphers=aNULL,RC4 \
-	smtp_tls_security_level=dane \
+	smtp_tls_security_level=may \
 	smtp_dns_support_level=dnssec \
 	smtp_tls_mandatory_protocols="!SSLv2,!SSLv3" \
 	smtp_tls_mandatory_ciphers=high \
