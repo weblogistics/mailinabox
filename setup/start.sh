@@ -95,6 +95,14 @@ PRIVATE_IP=$PRIVATE_IP
 PRIVATE_IPV6=$PRIVATE_IPV6
 EOF
 
+# Ensure the Hosts file is correct
+cat > /etc/hosts << EOF
+127.0.0.1    localhost
+${PUBLIC_IP}   $(PRIMARY_HOSTNAME)
+# The following lines are desirable for IPv6 capable hosts
+::1          localhost ip6-localhost ip6-loopback
+EOF
+
 # Start service configuration.
 source setup/system.sh
 source setup/ssl.sh
