@@ -132,7 +132,8 @@ tools/editconf.py /etc/postfix/main.cf \
 	tls_high_cipherlist=ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384 \
 	smtpd_tls_mandatory_exclude_ciphers=aNULL,DES,3DES,MD5,DES+MD5,RC4 \
 	tls_preempt_cipherlist=no \
-	smtpd_tls_received_header=yes
+	smtpd_tls_received_header=yes \
+    smtpd_sasl_auth_enable=yes
 
 # Prevent non-authenticated users from sending mail that requires being
 # relayed elsewhere. We don't want to be an "open relay". On outbound
