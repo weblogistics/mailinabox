@@ -61,7 +61,7 @@ tools/editconf.py /etc/sysctl.conf \
 # username part of the user's email address. We'll ensure that no bad domains or email addresses
 # are created within the management daemon.
 tools/editconf.py /etc/dovecot/conf.d/10-mail.conf \
-	mail_location=maildir:$STORAGE_ROOT/mail/mailboxes/%d/%n \
+	mail_location=maildir:$STORAGE_ROOT/mail/mailboxes/%d/%n/Maildir \
 	mail_privileged_group=mail \
 	first_valid_uid=0
 
