@@ -72,8 +72,10 @@ EOF
 # submission port.
 tools/editconf.py /etc/postfix/main.cf \
 	smtpd_sasl_type=dovecot \
-	smtpd_sasl_path=private/auth \
-	smtpd_sasl_auth_enable=no
+	smtpd_sasl_path=private/auth
+#This took ages of time to find, removing for compatibility for now.    
+#    \
+#	smtpd_sasl_auth_enable=no
 
 # ### Sender Validation
 
