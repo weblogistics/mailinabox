@@ -15,15 +15,12 @@ Mail-in-a-Box helps individuals take back control of their email by defining a o
 
 * * *
 
-Our goals are to:
+My goals is to:
 
-* Make deploying a good mail server easy.
-* Promote [decentralization](http://redecentralize.org/), innovation, and privacy on the web.
+* Make deploying a good hosting mail server easy.
+* Ensure compatibility with the most common mail clients (which means Windows 10 Mail!) 
+* As far as possible foolo the Mail-in-a-Box goals, without defeating the above!
 * Have automated, auditable, and [idempotent](https://web.archive.org/web/20190518072631/https://sharknet.us/2014/02/01/automated-configuration-management-challenges-with-idempotency/) configuration.
-* **Not** make a totally unhackable, NSA-proof server.
-* **Not** make something customizable by power users.
-
-Additionally, this project has a [Code of Conduct](CODE_OF_CONDUCT.md), which supersedes the goals above. Please review it when joining our community.
 
 The Box
 -------
@@ -36,7 +33,7 @@ The components installed are:
 
 * SMTP ([postfix](http://www.postfix.org/)), IMAP ([dovecot](http://dovecot.org/)), CardDAV/CalDAV ([Nextcloud](https://nextcloud.com/)), Exchange ActiveSync ([z-push](http://z-push.org/))
 * Webmail ([Roundcube](http://roundcube.net/)), static website hosting ([nginx](http://nginx.org/))
-* Spam filtering ([spamassassin](https://spamassassin.apache.org/)), greylisting ([postgrey](http://postgrey.schweikert.ch/))
+* Spam filtering ([spamassassin](https://spamassassin.apache.org/)). Greylisting ([postgrey](http://postgrey.schweikert.ch/)) is removed due to the number of people asking about the delays
 * DNS ([nsd4](https://www.nlnetlabs.nl/projects/nsd/)) with [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), DKIM ([OpenDKIM](http://www.opendkim.org/)), [DMARC](https://en.wikipedia.org/wiki/DMARC), [DNSSEC](https://en.wikipedia.org/wiki/DNSSEC), [DANE TLSA](https://en.wikipedia.org/wiki/DNS-based_Authentication_of_Named_Entities), and [SSHFP](https://tools.ietf.org/html/rfc4255) records automatically set
 * Backups ([duplicity](http://duplicity.nongnu.org/)), firewall ([ufw](https://launchpad.net/ufw)), intrusion protection ([fail2ban](http://www.fail2ban.org/wiki/index.php/Main_Page)), system monitoring ([munin](http://munin-monitoring.org/))
 
