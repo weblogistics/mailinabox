@@ -134,7 +134,7 @@ tools/editconf.py /etc/postfix/main.cf \
 	tls_preempt_cipherlist=no \
 	smtpd_tls_received_header=yes
     
-tools/editconf.py /etc/postfix/mai.cf \
+tools/editconf.py /etc/postfix/main.cf \
     smtpd_sasl_auth_enable=yes
 
 # Prevent non-authenticated users from sending mail that requires being
